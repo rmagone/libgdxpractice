@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -21,37 +22,52 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import io.github.practivce.gameClass.Drop;
+
 public class AssetLoadingScreen implements Screen {
     final Drop game;
     AssetManager manager;
     private BitmapFont font;
-    private SpriteBatch batch;
     private ProgressBar progressBar;
     private Stage stage;
     private Skin skin;
+    Label.LabelStyle labelStyle;
+    Label loadingLabel;
 
     public AssetLoadingScreen(final Drop game) {
         this.game = game;
         this.manager = game.manager;
-        this.batch = game.batch;
         this.stage = new Stage(new FitViewport(20, 20));
         Gdx.input.setInputProcessor(stage);
 
+        // ----------------------------------------------------------------------------
+        // 1. Calculate desired pixel size based on "world units" approach (optional).
+        // ----------------------------------------------------------------------------
         float worldUnitHeight = 0.5f; // Desired font height in world units
         float pixelsPerUnit = Gdx.graphics.getHeight() / 20f; // Pixels per world unit
+        int desiredPixelHeight = (int) (worldUnitHeight * pixelsPerUnit);
 
-        // Load and scale font
-        font = new BitmapFont(Gdx.files.internal("ui/comicsan/52.fnt"));
-        float fontScaleFactor = (worldUnitHeight * pixelsPerUnit) / font.getLineHeight();
-        font.getData().setScale(fontScaleFactor);
-        font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        // ----------------------------------------------------------------------------
+        // 2. Use FreeType to load a TTF font instead of a .fnt bitmap font.
+        // ----------------------------------------------------------------------------
 
-        System.out.println("Font Original LineHeight (pixels): " + font.getLineHeight());
-        System.out.println("Font Scale Factor: " + fontScaleFactor);
-        System.out.println("Font Scaled LineHeight (pixels): " + font.getLineHeight() * font.getData().scaleY);
-        System.out.println("Font Scaled LineHeight (world units): " + (font.getLineHeight() * font.getData().scaleY / pixelsPerUnit));
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("ui/comicsan/comicsans.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size =52;         // The size (in pixels) you want
+        parameter.color = Color.WHITE;               // Base color of your font
+        parameter.magFilter = Texture.TextureFilter.Linear;  // For smoother scaling
+        parameter.minFilter = Texture.TextureFilter.Linear;
+        font = generator.generateFont(parameter);
+        generator.dispose();
+        // ----------------------------------------------------------------------------
+        // 3. Create a LabelStyle using the newly generated TTF font.
+        // ----------------------------------------------------------------------------
+        labelStyle = new Label.LabelStyle(font, Color.RED);
+        loadingLabel = new Label("Loading...", labelStyle);
 
-        // Progress bar
+        // ----------------------------------------------------------------------------
+        // 4. Create a progress bar style and bar, then arrange them in a Table.
+        // ----------------------------------------------------------------------------
+
         skin = new Skin(Gdx.files.internal("uiskin.json"));
         ProgressBar.ProgressBarStyle progressBarStyle = new ProgressBar.ProgressBarStyle();
         progressBarStyle.background = skin.newDrawable("white", Color.RED);
@@ -65,9 +81,10 @@ public class AssetLoadingScreen implements Screen {
         Table table = new Table();
         table.setFillParent(true);
         table.add(progressBar).width(20).height(1).padBottom(1f).center();
+        table.row();
+        table.add(loadingLabel).width(20).height(1).padBottom(1f).center();
         stage.addActor(table);
 
-        // Debugging table
         stage.setDebugAll(true);
 
         // Load assets
@@ -80,7 +97,8 @@ public class AssetLoadingScreen implements Screen {
     }
 
     @Override
-    public void show() {}
+    public void show() {
+    }
 
     @Override
     public void render(float delta) {
@@ -92,47 +110,6 @@ public class AssetLoadingScreen implements Screen {
         // Draw the stage (progress bar)
         stage.act(delta);
         stage.draw();
-
-        // Debugging: Log progress bar details
-        System.out.println("Progress Bar Width: " + progressBar.getWidth());
-        System.out.println("Progress Bar Height: " + progressBar.getHeight());
-        System.out.println("Progress Bar X: " + progressBar.getX());
-        System.out.println("Progress Bar Y: " + progressBar.getY());
-
-        // Render the text below the progress bar
-        batch.setProjectionMatrix(stage.getViewport().getCamera().combined);
-        batch.begin();
-
-        // Calculate text position
-        String loadingText = "Loading... " + (int) (manager.getProgress() * 100) + "%";
-        GlyphLayout layout = new GlyphLayout(font, loadingText);
-
-        float textX = (stage.getViewport().getWorldWidth() - layout.width) / 2f;
-        float textY = progressBar.getY() - progressBar.getHeight() - layout.height - 0.1f;
-
-        // Debugging: Log text position and layout details
-        System.out.println("Text X: " + textX);
-        System.out.println("Text Y: " + textY);
-        System.out.println("Layout Width: " + layout.width);
-        System.out.println("Layout Height: " + layout.height);
-
-        // Draw text
-        font.draw(batch, layout, textX, textY);
-
-        batch.end();
-
-        // Debugging: Draw a rectangle around the text bounds
-        ShapeRenderer shapeRenderer = new ShapeRenderer();
-        shapeRenderer.setProjectionMatrix(stage.getViewport().getCamera().combined);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(Color.YELLOW);
-        shapeRenderer.rect(textX, textY - layout.height, layout.width, layout.height);
-        shapeRenderer.end();
-
-        // Debugging: Log viewport details
-        System.out.println("Viewport Width: " + stage.getViewport().getWorldWidth());
-        System.out.println("Viewport Height: " + stage.getViewport().getWorldHeight());
-
         // Check if assets are fully loaded
         if (manager.update()) {
             game.setScreen(new MainMenuScreen(game));
@@ -141,20 +118,22 @@ public class AssetLoadingScreen implements Screen {
     }
 
 
-
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
     }
 
     @Override
-    public void pause() {}
+    public void pause() {
+    }
 
     @Override
-    public void resume() {}
+    public void resume() {
+    }
 
     @Override
-    public void hide() {}
+    public void hide() {
+    }
 
     @Override
     public void dispose() {
