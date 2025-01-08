@@ -4,9 +4,12 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import io.github.practivce.AssetLoadingScreen;
 
@@ -22,11 +25,17 @@ public class Drop extends Game {
 //        Gdx.graphics.setWindowedMode(Gdx.graphics.getDisplayMode().width, Gdx.graphics.getDisplayMode().height);
         batch = new SpriteBatch();
         font = new BitmapFont();
-        viewport = new FitViewport(20f ,20f);
-        font.getData().setScale(viewport.getWorldHeight()*3 / Gdx.graphics.getHeight());
-
         manager = new AssetManager();
-
+        viewport = new FitViewport(20f, 20f);
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("ui/comicsan/comicsans.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 32;       // The size (in pixels) you want
+        parameter.color = Color.WHITE;               // Base color of your font
+        parameter.magFilter = Texture.TextureFilter.Linear;  // For smoother scaling
+        parameter.minFilter = Texture.TextureFilter.Linear;
+        font = generator.generateFont(parameter);
+        generator.dispose();
+        font.getData().setScale(viewport.getWorldHeight()  / Gdx.graphics.getHeight());
         font.setUseIntegerPositions(false);
 
         this.setScreen(new AssetLoadingScreen(this));

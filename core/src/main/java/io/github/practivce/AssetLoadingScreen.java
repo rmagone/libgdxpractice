@@ -26,7 +26,6 @@ import io.github.practivce.gameClass.Drop;
 public class AssetLoadingScreen implements Screen {
     final Drop game;
     AssetManager manager;
-    private BitmapFont font;
     private ProgressBar progressBar;
     private Stage stage;
     private Skin skin;
@@ -39,47 +38,31 @@ public class AssetLoadingScreen implements Screen {
         this.stage = new Stage(game.viewport);
         Gdx.input.setInputProcessor(stage);
         // ----------------------------------------------------------------------------
-        // 2. Use FreeType to load a TTF font instead of a .fnt bitmap font.
+        // 1. Create a LabelStyle using the newly generated TTF font.
         // ----------------------------------------------------------------------------
-
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("ui/comicsan/comicsans.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 32;       // The size (in pixels) you want
-        parameter.color = Color.WHITE;               // Base color of your font
-        parameter.magFilter = Texture.TextureFilter.Linear;  // For smoother scaling
-        parameter.minFilter = Texture.TextureFilter.Linear;
-        font = generator.generateFont(parameter);
-        generator.dispose();
-        font.getData().setScale(game.viewport.getWorldHeight() * 3 / Gdx.graphics.getHeight());
-        font.setUseIntegerPositions(false);
-        // ----------------------------------------------------------------------------
-        // 3. Create a LabelStyle using the newly generated TTF font.
-        // ----------------------------------------------------------------------------
-        labelStyle = new Label.LabelStyle(font, Color.RED);
+        labelStyle = new Label.LabelStyle(game.font, Color.RED);
         loadingLabel = new Label("Loading...", labelStyle);
-
+        loadingLabel.setAlignment(Align.center);
         // ----------------------------------------------------------------------------
-        // 4. Create a progress bar style and bar, then arrange them in a Table.
+        // 2. Create a progress bar style and bar, then arrange them in a Table.
         // ----------------------------------------------------------------------------
 
-        skin = new Skin(Gdx.files.internal("uiskin.json"));
+        skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
         ProgressBar.ProgressBarStyle progressBarStyle = new ProgressBar.ProgressBarStyle();
-        progressBarStyle.background = skin.newDrawable("white", Color.RED);
+        progressBarStyle.background = skin.newDrawable("white", Color.DARK_GRAY);
         progressBarStyle.knob = skin.newDrawable("white", Color.BLUE);
-        progressBarStyle.knobBefore = skin.newDrawable("white", Color.GREEN);
+        progressBarStyle.knobBefore = skin.newDrawable("white", Color.BLUE);
 
         progressBar = new ProgressBar(0f, 1f, 0.01f, false, progressBarStyle);
-//        progressBar.setSize(20, 1);
+        progressBar.setSize(20, 1);
 
         // Add the progress bar to the stage
         Table table = new Table();
         table.setFillParent(true);
         table.add(progressBar).width(20).height(1).padBottom(1f).center();
         table.row();
-        table.add(loadingLabel).center();
+        table.add(loadingLabel).width(20).height(1).padBottom(1f).center();
         stage.addActor(table);
-
-        stage.setDebugAll(true);
 
         // Load assets
         manager.load("Spades/spades.atlas", TextureAtlas.class);
@@ -100,6 +83,7 @@ public class AssetLoadingScreen implements Screen {
 
         // Update the progress bar value
         progressBar.setValue(manager.getProgress());
+        loadingLabel.setText("Loading... " + (int) (manager.getProgress() * 100));
 
         // Draw the stage (progress bar)
         stage.act(delta);
@@ -133,6 +117,5 @@ public class AssetLoadingScreen implements Screen {
     public void dispose() {
         stage.dispose();
         skin.dispose();
-        font.dispose();
     }
 }
