@@ -36,28 +36,22 @@ public class AssetLoadingScreen implements Screen {
     public AssetLoadingScreen(final Drop game) {
         this.game = game;
         this.manager = game.manager;
-        this.stage = new Stage(new FitViewport(20, 20));
+        this.stage = new Stage(game.viewport);
         Gdx.input.setInputProcessor(stage);
-
-        // ----------------------------------------------------------------------------
-        // 1. Calculate desired pixel size based on "world units" approach (optional).
-        // ----------------------------------------------------------------------------
-        float worldUnitHeight = 0.5f; // Desired font height in world units
-        float pixelsPerUnit = Gdx.graphics.getHeight() / 20f; // Pixels per world unit
-        int desiredPixelHeight = (int) (worldUnitHeight * pixelsPerUnit);
-
         // ----------------------------------------------------------------------------
         // 2. Use FreeType to load a TTF font instead of a .fnt bitmap font.
         // ----------------------------------------------------------------------------
 
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("ui/comicsan/comicsans.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size =52;         // The size (in pixels) you want
+        parameter.size = 32;       // The size (in pixels) you want
         parameter.color = Color.WHITE;               // Base color of your font
         parameter.magFilter = Texture.TextureFilter.Linear;  // For smoother scaling
         parameter.minFilter = Texture.TextureFilter.Linear;
         font = generator.generateFont(parameter);
         generator.dispose();
+        font.getData().setScale(game.viewport.getWorldHeight() * 3 / Gdx.graphics.getHeight());
+        font.setUseIntegerPositions(false);
         // ----------------------------------------------------------------------------
         // 3. Create a LabelStyle using the newly generated TTF font.
         // ----------------------------------------------------------------------------
@@ -75,14 +69,14 @@ public class AssetLoadingScreen implements Screen {
         progressBarStyle.knobBefore = skin.newDrawable("white", Color.GREEN);
 
         progressBar = new ProgressBar(0f, 1f, 0.01f, false, progressBarStyle);
-        progressBar.setSize(20, 1);
+//        progressBar.setSize(20, 1);
 
         // Add the progress bar to the stage
         Table table = new Table();
         table.setFillParent(true);
         table.add(progressBar).width(20).height(1).padBottom(1f).center();
         table.row();
-        table.add(loadingLabel).width(20).height(1).padBottom(1f).center();
+        table.add(loadingLabel).center();
         stage.addActor(table);
 
         stage.setDebugAll(true);
