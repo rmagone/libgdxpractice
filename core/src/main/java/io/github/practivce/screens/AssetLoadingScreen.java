@@ -1,4 +1,4 @@
-package io.github.practivce;
+package io.github.practivce.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -7,63 +7,47 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import io.github.practivce.gameClass.Drop;
+
+import static io.github.practivce.ui.UIHelpers.createProgressBar;
 
 public class AssetLoadingScreen implements Screen {
     final Drop game;
-    AssetManager manager;
+    private AssetManager manager;
     private ProgressBar progressBar;
     private Stage stage;
-    private Skin skin;
-    Label.LabelStyle labelStyle;
-    Label loadingLabel;
+    private Label.LabelStyle labelStyle;
+    private Label loadingLabel;
+    private Table table;
 
     public AssetLoadingScreen(final Drop game) {
         this.game = game;
         this.manager = game.manager;
         this.stage = new Stage(game.viewport);
+        Texture backgroundTexture = new Texture(Gdx.files.internal("teamlogo.png"));
+        Image img = new Image(backgroundTexture);
         Gdx.input.setInputProcessor(stage);
-        // ----------------------------------------------------------------------------
-        // 1. Create a LabelStyle using the newly generated TTF font.
-        // ----------------------------------------------------------------------------
+
         labelStyle = new Label.LabelStyle(game.font, Color.RED);
         loadingLabel = new Label("Loading...", labelStyle);
         loadingLabel.setAlignment(Align.center);
-        // ----------------------------------------------------------------------------
-        // 2. Create a progress bar style and bar, then arrange them in a Table.
-        // ----------------------------------------------------------------------------
-
-        skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
-        ProgressBar.ProgressBarStyle progressBarStyle = new ProgressBar.ProgressBarStyle();
-        progressBarStyle.background = skin.newDrawable("white", Color.DARK_GRAY);
-        progressBarStyle.knob = skin.newDrawable("white", Color.BLUE);
-        progressBarStyle.knobBefore = skin.newDrawable("white", Color.BLUE);
-
-        progressBar = new ProgressBar(0f, 1f, 0.01f, false, progressBarStyle);
-        progressBar.setSize(20, 1);
-
+        progressBar = createProgressBar();
         // Add the progress bar to the stage
-        Table table = new Table();
+        table = new Table();
         table.setFillParent(true);
+        table.align(Align.center);
+        table.add(img).width(6).height(6).center();
+        table.row();
         table.add(progressBar).width(20).height(1).padBottom(1f).center();
         table.row();
-        table.add(loadingLabel).width(20).height(1).padBottom(1f).center();
-        stage.addActor(table);
+        table.add(loadingLabel).width(10).height(1).padBottom(1f).center();
 
+        stage.addActor(table);
         // Load assets
         manager.load("Spades/spades.atlas", TextureAtlas.class);
         manager.load("background.png", Texture.class);
@@ -116,6 +100,6 @@ public class AssetLoadingScreen implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
-        skin.dispose();
+//        skin.dispose();
     }
 }
