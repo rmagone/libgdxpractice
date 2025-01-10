@@ -57,7 +57,6 @@ public class MainMenuScreen extends ScreenAdapter {
     @Override
     public void render(float delta) {
         ScreenUtils.clear(Color.BLACK);
-        stage.getBatch().setProjectionMatrix(stage.getCamera().combined);
         stage.act(delta);
         stage.draw();
     }

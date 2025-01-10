@@ -3,10 +3,7 @@ package io.github.practivce.ui;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
@@ -44,7 +41,7 @@ public class UIHelpers {
         progressBarStyle.knobBefore = new TextureRegionDrawable(new Texture("progressbarknobbg.png"));
         progressBarStyle.background.setMinWidth(20);
         progressBarStyle.background.setMinHeight(1f);
-;
+        ;
         progressBarStyle.knobBefore.setMinWidth(1f);
         progressBarStyle.knobBefore.setMinHeight(1f);
 
@@ -52,8 +49,27 @@ public class UIHelpers {
         return new ProgressBar(0f, 1f, 0.01f, false, progressBarStyle);
     }
 
-    public static Label createLabel(BitmapFont font) {
-        Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.RED);
-        return new Label("Loading...", labelStyle);
+    public static Label createLabel(BitmapFont font, String text, Color color) {
+        Label.LabelStyle labelStyle = new Label.LabelStyle(font, color);
+        return new Label(text, labelStyle);
+    }
+
+    public static CheckBox createCheckBox(BitmapFont font, String text, Color color) {
+        CheckBox.CheckBoxStyle checkBoxStyle = new CheckBox.CheckBoxStyle();
+        checkBoxStyle.checkboxOff = new TextureRegionDrawable(new Texture("unchecked.png"));
+        checkBoxStyle.checkboxOn = new TextureRegionDrawable(new Texture("checke.png"));
+        checkBoxStyle.checkboxOver = new TextureRegionDrawable(new Texture("unchecked.png")).tint(Color.LIGHT_GRAY);
+        checkBoxStyle.checkboxOnOver = new TextureRegionDrawable(new Texture("checke.png")).tint(Color.LIGHT_GRAY);
+        checkBoxStyle.checkboxOn.setMinHeight(2);
+        checkBoxStyle.checkboxOn.setMinWidth(2);
+        checkBoxStyle.checkboxOff.setMinHeight(2);
+        checkBoxStyle.checkboxOff.setMinWidth(2);
+        checkBoxStyle.checkboxOver.setMinHeight(2);
+        checkBoxStyle.checkboxOver.setMinWidth(2);
+        checkBoxStyle.checkboxOnOver.setMinHeight(2);
+        checkBoxStyle.checkboxOnOver.setMinWidth(2);
+        checkBoxStyle.font = font;
+        checkBoxStyle.fontColor = color;
+        return new CheckBox(text, checkBoxStyle);
     }
 }
