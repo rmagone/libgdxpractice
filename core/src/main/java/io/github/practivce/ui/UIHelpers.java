@@ -64,12 +64,15 @@ public class UIHelpers {
         checkBoxStyle.checkboxOn.setMinWidth(2);
         checkBoxStyle.checkboxOff.setMinHeight(2);
         checkBoxStyle.checkboxOff.setMinWidth(2);
+        checkBoxStyle.checkboxOff.setLeftWidth(2);
         checkBoxStyle.checkboxOver.setMinHeight(2);
         checkBoxStyle.checkboxOver.setMinWidth(2);
         checkBoxStyle.checkboxOnOver.setMinHeight(2);
         checkBoxStyle.checkboxOnOver.setMinWidth(2);
         checkBoxStyle.font = font;
         checkBoxStyle.fontColor = color;
-        return new CheckBox(text, checkBoxStyle);
+        CheckBox chk =  new CheckBox(text, checkBoxStyle);
+        chk.getLabelCell().padLeft(1);
+        return chk;
     }
 }

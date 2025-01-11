@@ -14,15 +14,6 @@ import io.github.practivce.gameClass.Drop;
 import io.github.practivce.screens.GameScreen;
 
 public class UIManager {
-    private Stage stage;
-    private Drop game;
-    private Table table;
-
-    public UIManager(Table table, Stage stage, Drop game) {
-        this.stage = stage;
-        this.game = game;
-        this.table = table;
-    }
 
     public TextButton createButton(Texture bgTexture, BitmapFont font, String text, Runnable onClick) {
         TextButton playButton = UIHelpers.createRoundedTextButton(bgTexture, font, text);
@@ -35,7 +26,7 @@ public class UIManager {
         return playButton;
     }
 
-    public CheckBox createCheckBox(BitmapFont font, String text, Color color,Runnable onClick) {
+    public CheckBox createCheckBox(BitmapFont font, String text, Color color, Runnable onClick) {
         CheckBox checkBox = UIHelpers.createCheckBox(font, text, color);
         checkBox.addListener(new ClickListener() {
             @Override
