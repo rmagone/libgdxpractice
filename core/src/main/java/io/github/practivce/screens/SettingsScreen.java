@@ -15,9 +15,6 @@ import io.github.practivce.gameClass.Drop;
 import io.github.practivce.helper.GameSettings;
 import io.github.practivce.ui.UIManager;
 
-import static io.github.practivce.ui.UIHelpers.createLabel;
-
-
 public class SettingsScreen implements Screen {
     final Drop game;
     private BitmapFont font;
@@ -34,15 +31,20 @@ public class SettingsScreen implements Screen {
         uiManager = new UIManager();
         this.game = game;
         stage = new Stage(game.viewport);
-        Gdx.input.setInputProcessor(stage);
         font = game.font;
-        stage.addActor(setupDifficultytable());
+        Gdx.input.setInputProcessor(stage);
+        initUI();
+
         setDefaultDifficulty(gameSettings);
-        stage.addActor(setSoundTable());
-        stage.addActor(setNavigationTable());
+
 //        stage.setDebugAll(true);
     }
 
+    private void initUI() {
+        stage.addActor(setupDifficultytable());
+        stage.addActor(setSoundTable());
+        stage.addActor(setNavigationTable());
+    }
 
     @Override
     public void show() {
@@ -51,13 +53,14 @@ public class SettingsScreen implements Screen {
     @Override
     public void render(float delta) {
         ScreenUtils.clear(Color.BLACK);
-
         stage.act();
         stage.draw();
     }
 
     @Override
     public void dispose() {
+        stage.dispose();
+        font.dispose();
     }
 
     @Override
@@ -80,17 +83,17 @@ public class SettingsScreen implements Screen {
 
     }
 
-    public Table setNavigationTable() {
+    private Table setNavigationTable() {
         Table navigationTable = new Table();
         navigationTable.setSize(8, 2);
-        navigationTable.setPosition(6,0);
+        navigationTable.setPosition(6, 0);
         navigationTable.add(setupBackButton()).width(3).height(2).padRight(1);
         navigationTable.add(setupApplyButton()).width(3).height(2);
         return navigationTable;
     }
 
-    public Table setSoundTable() {
-        Label lblSound = createLabel(font, "Sound settings", Color.TEAL);
+    private Table setSoundTable() {
+        Label lblSound = game.labelFactory.createSettingsLabel("Sound settings");
         Table soundTable = new Table();
         soundTable.setSize(7, 4);
         soundTable.setPosition(13, 10);
@@ -99,9 +102,9 @@ public class SettingsScreen implements Screen {
         return soundTable;
     }
 
-    public Table setupDifficultytable() {
+    private Table setupDifficultytable() {
         Table difficultyTable = new Table();
-        Label lblDifficulty = createLabel(font, "Difficulty", Color.TEAL);
+        Label lblDifficulty = game.labelFactory.createSettingsLabel("Difficulty");
         difficultyTable.setSize(7, 10);
         difficultyTable.setPosition(0, 10);
         difficultyTable.add(lblDifficulty).width(7).height(2);

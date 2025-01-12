@@ -13,8 +13,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import io.github.practivce.gameClass.Drop;
-
-import static io.github.practivce.ui.UIHelpers.createLabel;
 import static io.github.practivce.ui.UIHelpers.createProgressBar;
 
 public class AssetLoadingScreen implements Screen {
@@ -35,7 +33,7 @@ public class AssetLoadingScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
 
 
-        loadingLabel = createLabel(game.font, "Loading...", Color.RED);
+        loadingLabel = game.labelFactory.createLoadingScreenLabel("Loading...");
         loadingLabel.setAlignment(Align.center);
         progressBar = createProgressBar();
         // Add the progress bar to the stage

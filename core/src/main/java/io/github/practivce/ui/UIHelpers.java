@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 public class UIHelpers {
 
+
     /**
      * Creates a TextButton with a rounded background and custom text.
      *
@@ -49,11 +50,6 @@ public class UIHelpers {
         return new ProgressBar(0f, 1f, 0.01f, false, progressBarStyle);
     }
 
-    public static Label createLabel(BitmapFont font, String text, Color color) {
-        Label.LabelStyle labelStyle = new Label.LabelStyle(font, color);
-        return new Label(text, labelStyle);
-    }
-
     public static CheckBox createCheckBox(BitmapFont font, String text, Color color) {
         CheckBox.CheckBoxStyle checkBoxStyle = new CheckBox.CheckBoxStyle();
         checkBoxStyle.checkboxOff = new TextureRegionDrawable(new Texture("unchecked.png"));
@@ -71,7 +67,7 @@ public class UIHelpers {
         checkBoxStyle.checkboxOnOver.setMinWidth(2);
         checkBoxStyle.font = font;
         checkBoxStyle.fontColor = color;
-        CheckBox chk =  new CheckBox(text, checkBoxStyle);
+        CheckBox chk = new CheckBox(text, checkBoxStyle);
         chk.getLabelCell().padLeft(1);
         return chk;
     }

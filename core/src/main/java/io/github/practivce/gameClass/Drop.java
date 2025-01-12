@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import io.github.practivce.Factories.LabelFactory;
 import io.github.practivce.screens.AssetLoadingScreen;
 
 public class Drop extends Game {
@@ -16,6 +17,7 @@ public class Drop extends Game {
     public BitmapFont font;
     public FitViewport viewport;
     public AssetManager manager;
+    public LabelFactory labelFactory;
 //    private Camera camera;
 
     @Override
@@ -35,7 +37,7 @@ public class Drop extends Game {
         generator.dispose();
         font.getData().setScale(viewport.getWorldHeight()  / Gdx.graphics.getHeight());
         font.setUseIntegerPositions(false);
-
+        labelFactory = new LabelFactory(font);
         this.setScreen(new AssetLoadingScreen(this));
     }
 
