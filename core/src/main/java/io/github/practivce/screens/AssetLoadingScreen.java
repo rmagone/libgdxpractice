@@ -48,12 +48,11 @@ public class AssetLoadingScreen implements Screen {
 
         stage.addActor(table);
         // Load assets
+        manager.load("Clubs/clubs.atlas", TextureAtlas.class);
         manager.load("Spades/spades.atlas", TextureAtlas.class);
+        manager.load("Diamonds/diamonds.atlas", TextureAtlas.class);
+        manager.load("Hearts/hearts.atlas", TextureAtlas.class);
         manager.load("background.png", Texture.class);
-        manager.load("bucket.png", Texture.class);
-        manager.load("drop.png", Texture.class);
-        manager.load("drop.mp3", Sound.class);
-        manager.load("music.mp3", Music.class);
     }
 
     @Override

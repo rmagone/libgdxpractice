@@ -27,7 +27,7 @@ public class MainMenuScreen extends ScreenAdapter {
         table.setFillParent(true);
         UIManager uiManager = new UIManager();
 
-        Texture backgroundTexture = new Texture(Gdx.files.internal("background.png"));
+        Texture backgroundTexture = game.manager.get("background.png", Texture.class);
         Gdx.input.setInputProcessor(stage);
 
         table.background(new TextureRegionDrawable(backgroundTexture));
